@@ -1,14 +1,17 @@
 package com.veiculos.TabelaFipe.principal;
 
+import java.util.Comparator;
 import java.util.Scanner;
 
+import com.veiculos.TabelaFipe.model.Dados;
 import com.veiculos.TabelaFipe.service.ConsumoApi;
+import com.veiculos.TabelaFipe.service.ConverteDados;
 
 public class Principal {
   Scanner leitura = new Scanner(System.in);
   private final String URL_BASE = "https://parallelum.com.br/fipe/api/v1";
   private ConsumoApi consumo = new ConsumoApi();
-
+  private ConverteDados conversor = new ConverteDados();
   public void exibirMenu() {
     var menu = """
         *** OPÇÕES ***
@@ -35,5 +38,11 @@ public class Principal {
 
     var json = consumo.obterDados(endereco);
     System.out.println(json);
+
+    var marcas = conversor.obterLista(json, Dados.class);
+
+    marcas.stream().sorted(Comparator.comparing(Dados::codigo)).forEach(System.out::println);
+  
   }
+
 }
